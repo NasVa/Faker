@@ -87,6 +87,7 @@ namespace Faker
             catch(Exception e)
             {
                 exeptionConstructors.Add(maxParamConstructor);
+                Console.WriteLine("{0}: Constructor Exception", maxParamConstructor.Name);
                 newObj = Generate(type);
             }
             return newObj;

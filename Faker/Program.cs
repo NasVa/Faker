@@ -87,6 +87,9 @@ namespace Faker
 
             List<int> intList = faker.Create<List<int>>();
             Console.WriteLine(JsonConvert.SerializeObject(intList, Formatting.Indented));
+
+            ExceptionClass exceptionClass = faker.Create<ExceptionClass>();
+            Console.WriteLine(JsonConvert.SerializeObject(exceptionClass, Formatting.Indented));
         }
 
         /*public static void SerializationObject(object obj)
