@@ -83,6 +83,16 @@ namespace Faker
                         f.SetValue(newObj, Create(f.FieldType));
                     }
                 }
+                foreach(var p in type.GetProperties().Where(p => p.GetSetMethod() != null))
+                {
+                    //MethodInfo setMethod = p.GetSetMethod();
+                    //if (setMethod != null)   // у свойства есть публичный сеттер 
+                    //{
+                        if (p.GetValue(newObj).Equals(GetDefaultValue(p.PropertyType))){
+                            p.SetValue(newObj, Create(p.PropertyType));
+                        }
+                    //}
+                }
             }
             catch(Exception e)
             {

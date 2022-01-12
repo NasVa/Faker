@@ -15,6 +15,7 @@ namespace Faker.TestObjects
         private int num2;
         public int publicField;
         public float someFloat { get; set; }
+        public float somefloat2 { get; private set; }
 
         public Food(String name, int num)
         {

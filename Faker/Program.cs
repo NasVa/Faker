@@ -90,6 +90,17 @@ namespace Faker
 
             ExceptionClass exceptionClass = faker.Create<ExceptionClass>();
             Console.WriteLine(JsonConvert.SerializeObject(exceptionClass, Formatting.Indented));
+
+            //структуры
+            Console.WriteLine("Bar:");
+            Bar bar = faker.Create<Bar>();
+            Console.WriteLine(JsonConvert.SerializeObject(bar, Formatting.Indented));
+
+            Console.WriteLine("Foo:");
+            Foo fo = faker.Create<Foo>();
+            Console.WriteLine(JsonConvert.SerializeObject(fo, Formatting.Indented));
+
+
         }
 
         /*public static void SerializationObject(object obj)
