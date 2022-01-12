@@ -18,7 +18,8 @@ namespace Faker
             random = new Random();
             generators = new List<IValueGenerator>()
             {
-                new BoolGenerator(),
+                loadPlugin("C:/Users/Анастасия/source/repos/Faker/Faker/Plugins/BoolGenerator.cs", typeof(bool)),
+                //new BoolGenerator(),
                 new ByteGenerator(),
                 new IntGenerator(),
                 new LongGenerator(),
@@ -30,10 +31,34 @@ namespace Faker
                 new DoubleGenerator(),
                 new FloatGenerator(),
                 new StringGenerator(),
+                loadPlugin("C:/Users/Анастасия/source/repos/Faker/Faker/Plugins/DateTimeGenerator.cs", typeof(DateTime)),
                 new DateTimeGenerator(),
                 new ListGenerator()
             };
             exeptionConstructors = new List<ConstructorInfo>();
+        }
+
+        public IValueGenerator loadPlugin(string path, Type generatorType)
+        {
+            Assembly assembly = Assembly.LoadFrom(path);
+            var types = assembly.GetTypes();
+            foreach (Type type in types)
+            {
+                Type[] interfaces = type.GetInterfaces();
+                foreach (Type typeInterface in interfaces)
+                {
+                    if (typeInterface.FullName == typeof(IValueGenerator).FullName)
+                    {
+                        //var instance = (IValueGenerator)Activator.CreateInstance(type);
+                        var instance = assembly.CreateInstance(type.FullName) as IValueGenerator;
+                        if (instance.CanGenerate(generatorType))
+                        {
+                            return instance;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         public object Generate(System.Type type)

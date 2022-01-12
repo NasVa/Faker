@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text.Json;
 using Faker.TestObjects;
 using Newtonsoft.Json;
@@ -103,10 +104,10 @@ namespace Faker
 
         }
 
-        /*public static void SerializationObject(object obj)
-        {
-            foreach(Type  in obj.getFields())
-        }*/
+        
+
+                
+        
     }
 }
 
