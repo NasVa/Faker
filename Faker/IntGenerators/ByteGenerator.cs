@@ -1,17 +1,21 @@
 ﻿using System;
 
-namespace Generators.PrimitiveTypesGenerators
+namespace Faker
 {
-    public class ByteGenerator : AbstractGenerator
+    public class ByteGenerator : IValueGenerator
     {
         public ByteGenerator()
         {
-            DataType = typeof(byte);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
         {
-            return (byte)Random.Next(byte.MaxValue + 1);
+            return type == typeof(byte);
+        }
+
+        public object Generate(GeneratorContext context)
+        {
+            return (byte)context.Random.Next(byte.MaxValue + 1);
         }
     }
 }

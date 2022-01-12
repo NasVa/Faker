@@ -1,7 +1,4 @@
-﻿using Generators;
-using Generators.PrimitiveTypesGenerators;
-using Generators.PrimitiveTypesGenerators.FloatGenerators;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace Faker
 {
-    class Faker
+    public class Faker : IFaker
     {
         Random random;
-        List<AbstractGenerator> generators;
+        List<IValueGenerator> generators;
         List<ConstructorInfo> exeptionConstructors;
 
         public Faker()
         {
             random = new Random();
-            generators = new List<AbstractGenerator>()
+            generators = new List<IValueGenerator>()
             {
                 new BoolGenerator(),
                 new ByteGenerator(),
@@ -33,7 +30,8 @@ namespace Faker
                 new DoubleGenerator(),
                 new FloatGenerator(),
                 new StringGenerator(),
-                new DateTimeGenerator()
+                new DateTimeGenerator(),
+                new ListGenerator()
             };
             exeptionConstructors = new List<ConstructorInfo>();
         }
@@ -73,24 +71,24 @@ namespace Faker
             object[] args = new object[maxParamConstructor.GetParameters().Length];
             for (int i = 0; i < parameters.Length; i++)
             {
-                args[i] = Create2(parameters[i].ParameterType);
+                args[i] = Create(parameters[i].ParameterType);
             }
             try
             {
                 newObj = maxParamConstructor.Invoke(args);
                 foreach (var f in type.GetFields().Where(f => f.IsPublic))
                 {
-                    Console.WriteLine(f.Name);
+                    /*Console.WriteLine(f.Name);
                     Console.WriteLine(f.GetValue(newObj).GetType());
                     Console.WriteLine(f.GetValue(newObj));
                     if (GetDefaultValue(f.FieldType) != null)
                     {
                         Console.WriteLine(GetDefaultValue(f.FieldType).GetType());
                         Console.WriteLine(GetDefaultValue(f.FieldType));
-                    }
-                    if (f.GetValue(newObj) == GetDefaultValue(f.FieldType))
+                    }*/
+                    if (f.GetValue(newObj).Equals(GetDefaultValue(f.FieldType)))
                     {
-                        f.SetValue(newObj, Generate(f.GetType()));
+                        f.SetValue(newObj, Create(f.FieldType));
                     }
                 }
             }
@@ -105,16 +103,16 @@ namespace Faker
 
         public T Create<T>()
         {
-            return (T)Create2(typeof(T));
+            return (T)Create(typeof(T));
         }
 
-        private object Create2(System.Type type)
+        public object Create(Type type)
         {
-            foreach (AbstractGenerator generator in generators)
+            foreach (IValueGenerator generator in generators)
             {
-                if (generator.DataType == type)
+                if (generator.CanGenerate(type))
                 {
-                    object o = generator.Generate();
+                    object o = generator.Generate(new GeneratorContext(new Random(), type, this));
                     if (o != null)
                     {
                         return o;

@@ -4,18 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Generators.PrimitiveTypesGenerators
+namespace Faker
 {
-    public class BoolGenerator : AbstractGenerator
+    public class BoolGenerator : IValueGenerator
     {
         public BoolGenerator()
         {
-            DataType = typeof(bool);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
         {
-            if (Random.Next(2)==0)
+            return type == typeof(bool);
+        }
+
+        public object Generate(GeneratorContext context)
+        {
+            if (context.Random.Next(2)==0)
             {
                 return (true);
             }

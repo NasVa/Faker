@@ -1,19 +1,22 @@
 ﻿using System;
 
-namespace Generators.PrimitiveTypesGenerators
+namespace Faker
 {
-    public class IntGenerator : AbstractGenerator
+    public class IntGenerator : IValueGenerator
 
     {
         public IntGenerator()
         {
-            DataType = typeof(int);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
+        {
+            return type == typeof(int);
+        }
+        public object Generate(GeneratorContext context)
         {
             byte[] buf = new byte[4];
-            Random.NextBytes(buf);
+            context.Random.NextBytes(buf);
             return BitConverter.ToInt32(buf, 0);
         }
     }

@@ -1,15 +1,19 @@
-﻿namespace Generators.PrimitiveTypesGenerators
+﻿using System;
+namespace Faker
 {
-    public class ShortGenerator : AbstractGenerator
+    public class ShortGenerator : IValueGenerator
     {
         public ShortGenerator()
         {
-            DataType = typeof(short);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
         {
-            return (short)Random.Next(short.MinValue, short.MaxValue + 1);
+            return type == typeof(short);
+        }
+        public object Generate(GeneratorContext context)
+        {
+            return (short)context.Random.Next(short.MinValue, short.MaxValue + 1);
         }
     }
 }

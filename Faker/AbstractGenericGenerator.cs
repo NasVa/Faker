@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Generators
+namespace Faker
 {
-    public abstract class AbstractGenericGenerator : AbstractGenerator
+    public abstract class AbstractGenericGenerator
     {
         protected int Size;
+        public Type DataType { get; protected set; }
 
-        public AbstractGenerator GenericGenerator;
-
-        public abstract override object Generate();
+        public abstract object Generate(System.Type type);
     }
 }

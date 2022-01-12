@@ -4,18 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Generators.PrimitiveTypesGenerators
+namespace Faker
 {
-    public class SByteGenerator : AbstractGenerator
+    public class SByteGenerator : IValueGenerator
     {
         public SByteGenerator()
         {
-            DataType = typeof(sbyte);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
         {
-            return (sbyte)Random.Next(sbyte.MinValue, sbyte.MaxValue + 1);
+            return type == typeof(sbyte);
+        }
+        public object Generate(GeneratorContext context)
+        {
+            return (sbyte)context.Random.Next(sbyte.MinValue, sbyte.MaxValue + 1);
         }
     }
 }

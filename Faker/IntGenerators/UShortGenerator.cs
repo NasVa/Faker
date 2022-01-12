@@ -4,18 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Generators.PrimitiveTypesGenerators
+namespace Faker
 {
-    public class UShortGenerator : AbstractGenerator
+    public class UShortGenerator : IValueGenerator
     {
         public UShortGenerator()
         {
-            DataType = typeof(ushort);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
         {
-            return (ushort)Random.Next(ushort.MaxValue);
+            return type == typeof(ushort);
+        }
+
+        public object Generate(GeneratorContext context)
+        {
+            return (ushort)context.Random.Next(ushort.MaxValue);
         }
     }
 }

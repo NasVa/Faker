@@ -4,19 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Generators.PrimitiveTypesGenerators.FloatGenerators
+namespace Faker
 {
-    public class DoubleGenerator : AbstractGenerator
+    public class DoubleGenerator : IValueGenerator
     {
         public DoubleGenerator()
         {
-            DataType = typeof(double);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
+        {
+            return type == typeof(double);
+        }
+        public object Generate(GeneratorContext context)
         {
             byte[] buff = new byte[8];
-            Random.NextBytes(buff);
+            context.Random.NextBytes(buff);
             return BitConverter.ToDouble(buff, 0);
         }
     }

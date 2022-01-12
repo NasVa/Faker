@@ -4,19 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Generators.PrimitiveTypesGenerators
+namespace Faker
 {
-    public class ULongGenerator : AbstractGenerator
+    public class ULongGenerator : IValueGenerator
     {
         public ULongGenerator()
         {
-            DataType = typeof(ulong);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
+        {
+            return type == typeof(ulong);
+        }
+
+        public object Generate(GeneratorContext context)
         {
             byte[] buf = new byte[8];
-            Random.NextBytes(buf);
+            context.Random.NextBytes(buf);
             return BitConverter.ToUInt64(buf, 0);
         }
     }

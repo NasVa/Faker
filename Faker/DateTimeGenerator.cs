@@ -4,24 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Generators
+namespace Faker
 {
-    public class DateTimeGenerator : AbstractGenerator
+    public class DateTimeGenerator : IValueGenerator
     {
         public DateTimeGenerator()
         {
-            DataType = typeof(DateTime);
         }
 
-        public override object Generate()
+        public bool CanGenerate(Type type)
         {
-            int year = Random.Next(DateTime.MinValue.Year, DateTime.MaxValue.Year);
-            int month = Random.Next(DateTime.MinValue.Month, DateTime.MaxValue.Month);
-            int day = Random.Next(DateTime.MinValue.Day, DateTime.MaxValue.Day);
-            int hour = Random.Next(24);
-            int minutes = Random.Next(60);
-            int seconds = Random.Next(60);
-            int milliseconds = Random.Next(1000);
+            return type == typeof(DateTime);
+        }
+
+        public object Generate(GeneratorContext context)
+        {
+            int year = context.Random.Next(DateTime.MinValue.Year, DateTime.MaxValue.Year);
+            int month = context.Random.Next(DateTime.MinValue.Month, DateTime.MaxValue.Month);
+            int day = context.Random.Next(DateTime.MinValue.Day, DateTime.MaxValue.Day);
+            int hour = context.Random.Next(24);
+            int minutes = context.Random.Next(60);
+            int seconds = context.Random.Next(60);
+            int milliseconds = context.Random.Next(1000);
             return new DateTime(year, month, day, hour, minutes, seconds, milliseconds);
         }
     }
