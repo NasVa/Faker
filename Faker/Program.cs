@@ -1,31 +1,90 @@
 ﻿using System;
+using System.Text.Json;
+using Faker.TestObjects;
+using Newtonsoft.Json;
+
 
 namespace Faker
 {
     class Program
     {
-        struct cat
+        
+        struct Bar
         {
             public string name;
-            public string asa;
+            public string color;
             public int age;
+
+            public Bar(string name, string color, int age)
+            {
+                this.name = name;
+                this.color = color;
+                this.age = age;
+            }
+
         }
-        struct mew{
-            public string Name;
+        struct Foo
+        {
+            public string name;
             public int age;
-            public string something;
             public bool s;
             public float b;
-            public cat c;
+            public Bar bar;
+
+            public Foo(string name, int age, bool s, float b, Bar bar)
+            {
+                this.name = name;
+                this.age = age;
+                this.s = s;
+                this.b = b;
+                this.bar = bar;
+            }
         }
+
+        
         static void Main(string[] args)
         {
             Faker faker = new Faker();
-            mew NewMew = new mew();
-            NewMew = faker.Create<mew>();
-            Console.WriteLine(NewMew.age);
-            Console.WriteLine(NewMew.b);
-            Console.WriteLine()
+
+            byte b = faker.Create<byte>();
+            int i = faker.Create<int>();
+            long l = faker.Create<long>();
+            sbyte sb = faker.Create<sbyte>();
+            short sh = faker.Create<short>();
+            uint ui = faker.Create<uint>();
+            ulong ul = faker.Create<ulong>();
+            ushort ush = faker.Create<ushort>();
+            float f = faker.Create<float>();
+            double d = faker.Create<double>();
+            string str = faker.Create<string>();
+            DateTime dataTime = faker.Create<DateTime>();
+            bool bl = faker.Create<bool>();
+
+            Foo foo = faker.Create<Foo>();
+            Console.WriteLine(b);
+            Console.WriteLine(i);
+            Console.WriteLine(l);
+            Console.WriteLine(sb);
+            Console.WriteLine(sh);
+            Console.WriteLine(ui);
+            Console.WriteLine(ul);
+            Console.WriteLine(ush);
+            Console.WriteLine(f);
+            Console.WriteLine(d);
+            Console.WriteLine(str);
+            Console.WriteLine(dataTime);
+            Console.WriteLine(bl);
+
+            //класс имеет только приватный конструктор
+            Adress adress = faker.Create<Adress>();    
+            //класс имеет несколько конструкторов с параметрами
+            Food food = faker.Create<Food>();
+            Console.WriteLine(JsonConvert.SerializeObject(food, Formatting.Indented));
+            //иерархия классов
+            Cat cat = faker.Create<Cat>();
+            Console.WriteLine(JsonConvert.SerializeObject(cat, Formatting.Indented));
         }
     }
 }
+
+// Console.WriteLine(JsonConvert.SerializeObject(user, Formatting.Indented));

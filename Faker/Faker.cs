@@ -14,6 +14,7 @@ namespace Faker
     {
         Random random;
         List<AbstractGenerator> generators;
+        List<ConstructorInfo> exeptionConstructors;
 
         public Faker()
         {
@@ -31,14 +32,15 @@ namespace Faker
                 new UShortGenerator(),
                 new DoubleGenerator(),
                 new FloatGenerator(),
-                new StringGenerator()
-                //new DateTimeGenerator(),
+                new StringGenerator(),
+                new DateTimeGenerator()
             };
-
+            exeptionConstructors = new List<ConstructorInfo>();
         }
 
         public object Generate(System.Type type)
         {
+            object newObj = null;
             ConstructorInfo[] constructors = type.GetConstructors();
             int numParam = 0;
             ConstructorInfo maxParamConstructor = null;
@@ -46,17 +48,58 @@ namespace Faker
             {
                 if (constructor.GetParameters().Length > numParam)
                 {
-                    numParam = constructor.GetParameters().Length;
-                    maxParamConstructor = constructor;
+                    if (exeptionConstructors.Count == 0)
+                    {
+                        numParam = constructor.GetParameters().Length;
+                        maxParamConstructor = constructor;
+                    }
+                    else { 
+                        if (!exeptionConstructors.Contains(constructor))
+                        {
+                            numParam = constructor.GetParameters().Length;
+                            maxParamConstructor = constructor;
+                        }
+                    }
                 }
             }
+
+            if (maxParamConstructor == null)
+            {
+                Console.WriteLine("{0}: No one available constructor", type.ToString());
+                return null;
+            }
+
             ParameterInfo[] parameters = maxParamConstructor.GetParameters();
             object[] args = new object[maxParamConstructor.GetParameters().Length];
             for (int i = 0; i < parameters.Length; i++)
             {
                 args[i] = Create2(parameters[i].ParameterType);
             }
-            return maxParamConstructor.Invoke(args);
+            try
+            {
+                newObj = maxParamConstructor.Invoke(args);
+                foreach (var f in type.GetFields().Where(f => f.IsPublic))
+                {
+                    Console.WriteLine(f.Name);
+                    Console.WriteLine(f.GetValue(newObj).GetType());
+                    Console.WriteLine(f.GetValue(newObj));
+                    if (GetDefaultValue(f.FieldType) != null)
+                    {
+                        Console.WriteLine(GetDefaultValue(f.FieldType).GetType());
+                        Console.WriteLine(GetDefaultValue(f.FieldType));
+                    }
+                    if (f.GetValue(newObj) == GetDefaultValue(f.FieldType))
+                    {
+                        f.SetValue(newObj, Generate(f.GetType()));
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                exeptionConstructors.Add(maxParamConstructor);
+                newObj = Generate(type);
+            }
+            return newObj;
         }
 
 
@@ -65,17 +108,35 @@ namespace Faker
             return (T)Create2(typeof(T));
         }
 
-        public object Create2(System.Type type)
+        private object Create2(System.Type type)
         {
             foreach (AbstractGenerator generator in generators)
             {
                 if (generator.DataType == type)
                 {
                     object o = generator.Generate();
-                    return o;
+                    if (o != null)
+                    {
+                        return o;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Create object exception");
+                    }
                 }
             }
             return Generate(type);
+        }
+
+        private static object GetDefaultValue(Type t)
+        {
+            if (t.IsValueType)
+            
+                // Для типов-значений вызов конструктора по умолчанию даст default(T).
+                return Activator.CreateInstance(t);
+            else
+                // Для ссылочных типов значение по умолчанию всегда null.
+                return null;
         }
     }
 }

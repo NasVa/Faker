@@ -12,7 +12,6 @@ namespace Faker.TestObjects
         int age;
         bool isTrue;
         short someShort;
-        Adress adress;
         Food food;
 
         public Cat(string name, int age)
@@ -21,12 +20,12 @@ namespace Faker.TestObjects
             this.age = age;
         }
 
-        public Cat(string name, int age, bool isTrue, string city, string street, int num)
+        public Cat(string name, int age, bool isTrue, string city, string street, int num, Food food)
         {
             this.name = name;
             this.age = age;
             this.isTrue = isTrue;
-            this.adress = Adress.newAdress(city, street, num);
+            this.food = food;
         }
 
     }
