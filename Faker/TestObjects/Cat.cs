@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 
 namespace Faker.TestObjects
 {
+    [Serializable]
     class Cat
     {
-        String name;
-        int age;
-        bool isTrue;
-        short someShort;
-        Food food;
+        
+        public String name;
+        public int age;
+        public bool isTrue;
+        private short someShort;
+
+        public Food food;
 
         public Cat(string name, int age)
         {
@@ -20,7 +23,7 @@ namespace Faker.TestObjects
             this.age = age;
         }
 
-        public Cat(string name, int age, bool isTrue, string city, string street, int num, Food food)
+        public Cat(string name, int age, bool isTrue, Food food)
         {
             this.name = name;
             this.age = age;

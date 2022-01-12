@@ -78,14 +78,6 @@ namespace Faker
                 newObj = maxParamConstructor.Invoke(args);
                 foreach (var f in type.GetFields().Where(f => f.IsPublic))
                 {
-                    /*Console.WriteLine(f.Name);
-                    Console.WriteLine(f.GetValue(newObj).GetType());
-                    Console.WriteLine(f.GetValue(newObj));
-                    if (GetDefaultValue(f.FieldType) != null)
-                    {
-                        Console.WriteLine(GetDefaultValue(f.FieldType).GetType());
-                        Console.WriteLine(GetDefaultValue(f.FieldType));
-                    }*/
                     if (f.GetValue(newObj).Equals(GetDefaultValue(f.FieldType)))
                     {
                         f.SetValue(newObj, Create(f.FieldType));

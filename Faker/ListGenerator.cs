@@ -15,7 +15,8 @@ namespace Faker
 
         public bool CanGenerate(Type type)
         {
-            return type == typeof(List<>);
+            return type.GetInterfaces().Contains(typeof(IList));
+            //return type == typeof(IList);
         }
 
         public object Generate(GeneratorContext context)

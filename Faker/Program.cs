@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using Faker.TestObjects;
 using Newtonsoft.Json;
@@ -83,7 +84,15 @@ namespace Faker
             //иерархия классов
             Cat cat = faker.Create<Cat>();
             Console.WriteLine(JsonConvert.SerializeObject(cat, Formatting.Indented));
+
+            List<int> intList = faker.Create<List<int>>();
+            Console.WriteLine(JsonConvert.SerializeObject(intList, Formatting.Indented));
         }
+
+        /*public static void SerializationObject(object obj)
+        {
+            foreach(Type  in obj.getFields())
+        }*/
     }
 }
 

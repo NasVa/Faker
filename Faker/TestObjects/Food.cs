@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Faker.TestObjects
 {
+    [Serializable]
     class Food
     {
         public String name;
