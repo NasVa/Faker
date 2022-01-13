@@ -18,7 +18,7 @@ namespace Faker
             random = new Random();
             generators = new List<IValueGenerator>()
             {
-                loadPlugin("C:/Users/Анастасия/source/repos/Faker/Faker/Plugins/BoolGenerator.cs", typeof(bool)),
+                loadPlugin("C:/Users/Анастасия/source/repos/Faker/BoolGeneratorPlugin/bin/Debug/net5.0/BoolGeneratorPlugin.dll", typeof(bool)),
                 //new BoolGenerator(),
                 new ByteGenerator(),
                 new IntGenerator(),
@@ -31,8 +31,8 @@ namespace Faker
                 new DoubleGenerator(),
                 new FloatGenerator(),
                 new StringGenerator(),
-                loadPlugin("C:/Users/Анастасия/source/repos/Faker/Faker/Plugins/DateTimeGenerator.cs", typeof(DateTime)),
-                new DateTimeGenerator(),
+                loadPlugin("C:/Users/Анастасия/source/repos/Faker/DateTimeGeneratorPlugin/bin/Debug/net5.0/DateTimeGeneratorPlugin.dll", typeof(DateTime)),
+                //new DateTimeGenerator(),
                 new ListGenerator()
             };
             exeptionConstructors = new List<ConstructorInfo>();
