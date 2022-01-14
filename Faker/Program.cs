@@ -44,6 +44,7 @@ namespace Faker
         }
 
         
+
         static void Main(string[] args)
         {
             Faker faker = new Faker();
@@ -101,6 +102,7 @@ namespace Faker
             Foo fo = faker.Create<Foo>();
             Console.WriteLine(JsonConvert.SerializeObject(fo, Formatting.Indented));
 
+            ClassA a = faker.Create<ClassA>(); 
 
         }
 

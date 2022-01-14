@@ -12,7 +12,7 @@ namespace Faker
         Random random;
         List<IValueGenerator> generators;
         List<ConstructorInfo> exeptionConstructors;
-
+        List<Type> types;
         public Faker()
         {
             random = new Random();
@@ -143,6 +143,10 @@ namespace Faker
                     object o = generator.Generate(new GeneratorContext(new Random(), type, this));
                     if (o != null)
                     {
+                        if (types.Count != null)
+                        {
+                            types.Remove(type);
+                        }
                         return o;
                     }
                     else
@@ -150,6 +154,15 @@ namespace Faker
                         Console.WriteLine("Create object exception");
                     }
                 }
+            }
+            if (!types.Contains(type))
+            {
+                types.Add(type);
+            }
+            else
+            {
+                Console.WriteLine("cyclic dependency");
+                throw new Exception();
             }
             return Generate(type);
         }
