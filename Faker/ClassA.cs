@@ -9,5 +9,10 @@ namespace Faker
     class ClassA
     {
         public ClassB b { get; set; }
+
+        public ClassA(ClassB b)
+        {
+            this.b = b;
+        }
     }
 }

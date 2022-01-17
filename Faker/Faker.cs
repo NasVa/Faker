@@ -11,8 +11,9 @@ namespace Faker
     {
         Random random;
         List<IValueGenerator> generators;
+        List<Type> typesWithDefaultValues;
         List<ConstructorInfo> exeptionConstructors;
-        List<Type> types;
+        List<Type> typesInProcess;
         public Faker()
         {
             random = new Random();
@@ -35,7 +36,25 @@ namespace Faker
                 //new DateTimeGenerator(),
                 new ListGenerator()
             };
+
+            typesWithDefaultValues = new List<Type>
+            {
+                typeof(bool),
+                typeof(byte),
+                typeof(int),
+                typeof(long),
+                typeof(sbyte),
+                typeof(short),
+                typeof(uint),
+                typeof(ulong),
+                typeof(ushort),
+                typeof(double),
+                typeof(float),
+                typeof(string),
+                typeof(List<>)
+            };
             exeptionConstructors = new List<ConstructorInfo>();
+            typesInProcess = new List<Type>();
         }
 
         public IValueGenerator loadPlugin(string path, Type generatorType)
@@ -105,7 +124,15 @@ namespace Faker
                 {
                     if (f.GetValue(newObj).Equals(GetDefaultValue(f.FieldType)))
                     {
-                        f.SetValue(newObj, Create(f.FieldType));
+                        object newParam = Create(f.FieldType);
+                        if (newParam != null)
+                        {
+                            f.SetValue(newObj, newParam);
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
                 }
                 foreach(var p in type.GetProperties().Where(p => p.GetSetMethod() != null))
@@ -113,9 +140,12 @@ namespace Faker
                     //MethodInfo setMethod = p.GetSetMethod();
                     //if (setMethod != null)   // у свойства есть публичный сеттер 
                     //{
-                        if (p.GetValue(newObj).Equals(GetDefaultValue(p.PropertyType))){
+                    if (typesWithDefaultValues.Contains(p.PropertyType)){
+                        if (p.GetValue(newObj).Equals(GetDefaultValue(p.PropertyType)))
+                        {
                             p.SetValue(newObj, Create(p.PropertyType));
                         }
+                    }
                     //}
                 }
             }
@@ -143,28 +173,35 @@ namespace Faker
                     object o = generator.Generate(new GeneratorContext(new Random(), type, this));
                     if (o != null)
                     {
-                        if (types.Count != null)
-                        {
-                            types.Remove(type);
-                        }
                         return o;
                     }
                     else
                     {
                         Console.WriteLine("Create object exception");
+                        return null;
                     }
                 }
             }
-            if (!types.Contains(type))
+            try
             {
-                types.Add(type);
+                if (!typesInProcess.Contains(type))
+                {
+                    typesInProcess.Add(type);
+                }
+                else
+                {
+                    typesInProcess.Clear();
+                    throw new Exception();
+                }
             }
-            else
+            catch
             {
                 Console.WriteLine("cyclic dependency");
-                throw new Exception();
+                return null;
             }
-            return Generate(type);
+            object obj = Generate(type);
+            typesInProcess.Remove(type);
+            return obj;
         }
 
         private static object GetDefaultValue(Type t)
