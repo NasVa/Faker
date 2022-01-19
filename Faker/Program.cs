@@ -10,7 +10,42 @@ namespace Faker
 {
     class Program
     {
-        
+
+        class User
+        {
+            public string name;
+            public int age { get; set; }
+            float money = 10.05f;
+            public List<Dog> dogs;
+            public Profile profile;
+
+            public User()
+            {
+
+            }
+        }
+
+        class Dog
+        {
+            public String name;
+            public User owner;
+
+        }
+
+        class Profile
+        {
+            public String address;
+            public Profile()
+            {
+
+            }
+            public Profile(string addr)
+            {
+                //throw new Exception();
+                //address = addr;
+            }
+        }
+
         struct Bar
         {
             public string name;
@@ -49,46 +84,48 @@ namespace Faker
         {
             Faker faker = new Faker();
 
-            byte b = faker.Create<byte>();
-            int i = faker.Create<int>();
-            long l = faker.Create<long>();
-            sbyte sb = faker.Create<sbyte>();
-            short sh = faker.Create<short>();
-            uint ui = faker.Create<uint>();
-            ulong ul = faker.Create<ulong>();
-            ushort ush = faker.Create<ushort>();
-            float f = faker.Create<float>();
-            double d = faker.Create<double>();
-            string str = faker.Create<string>();
-            DateTime dataTime = faker.Create<DateTime>();
-            bool bl = faker.Create<bool>();
+            List<Type> types = new List<Type>{
+                typeof(bool),
+                typeof(byte),
+                typeof(int),
+                typeof(long),
+                typeof(sbyte),
+                typeof(short),
+                typeof(uint),
+                typeof(ulong),
+                typeof(ushort),
+                typeof(double),
+                typeof(float),
+                typeof(string),
+            };
+            
+            foreach(Type type in types){
+                object newObj = faker.Create(type);
+                Console.WriteLine("{0} : {1}", type, JsonConvert.SerializeObject(newObj, Formatting.Indented));
+            }
 
-            Foo foo = faker.Create<Foo>();
-            Console.WriteLine(b);
-            Console.WriteLine(i);
-            Console.WriteLine(l);
-            Console.WriteLine(sb);
-            Console.WriteLine(sh);
-            Console.WriteLine(ui);
-            Console.WriteLine(ul);
-            Console.WriteLine(ush);
-            Console.WriteLine(f);
-            Console.WriteLine(d);
-            Console.WriteLine(str);
-            Console.WriteLine(dataTime);
-            Console.WriteLine(bl);
+            DateTime dataTime = faker.Create<DateTime>();
+            Console.WriteLine("DateTime : {0}", dataTime);
+
+            List<int> intList = faker.Create<List<int>>();
+            Console.WriteLine("List<int> : {0}", JsonConvert.SerializeObject(intList, Formatting.Indented));
+
 
             //класс имеет только приватный конструктор
-            Adress adress = faker.Create<Adress>();    
+            Adress adress = faker.Create<Adress>();  
+            
             //класс имеет несколько конструкторов с параметрами
             Food food = faker.Create<Food>();
             Console.WriteLine(JsonConvert.SerializeObject(food, Formatting.Indented));
+
             //иерархия классов
             Cat cat = faker.Create<Cat>();
             Console.WriteLine(JsonConvert.SerializeObject(cat, Formatting.Indented));
 
+            /*
             List<int> intList = faker.Create<List<int>>();
             Console.WriteLine(JsonConvert.SerializeObject(intList, Formatting.Indented));
+            */
 
             ExceptionClass exceptionClass = faker.Create<ExceptionClass>();
             Console.WriteLine(JsonConvert.SerializeObject(exceptionClass, Formatting.Indented));
@@ -102,7 +139,11 @@ namespace Faker
             Foo fo = faker.Create<Foo>();
             Console.WriteLine(JsonConvert.SerializeObject(fo, Formatting.Indented));
 
-            ClassA a = faker.Create<ClassA>(); 
+            ClassA a = faker.Create<ClassA>();
+
+            Console.WriteLine("User:");
+            User u = faker.Create<User>();
+            Console.WriteLine(JsonConvert.SerializeObject(u, Formatting.Indented));
 
         }
 

@@ -51,6 +51,7 @@ namespace Faker
                 typeof(double),
                 typeof(float),
                 typeof(string),
+                typeof(DateTime),
                 typeof(List<>)
             };
             exeptionConstructors = new List<ConstructorInfo>();
@@ -88,7 +89,7 @@ namespace Faker
             ConstructorInfo maxParamConstructor = null;
             foreach (ConstructorInfo constructor in constructors)
             {
-                if (constructor.GetParameters().Length > numParam)
+                if (constructor.GetParameters().Length >= numParam)
                 {
                     if (exeptionConstructors.Count == 0)
                     {
@@ -122,16 +123,36 @@ namespace Faker
                 newObj = maxParamConstructor.Invoke(args);
                 foreach (var f in type.GetFields().Where(f => f.IsPublic))
                 {
-                    if (f.GetValue(newObj).Equals(GetDefaultValue(f.FieldType)))
+                    var a = f.GetValue(newObj);
+                    var b = GetDefaultValue(f.FieldType);
+                    if (f.FieldType.IsValueType)
                     {
-                        object newParam = Create(f.FieldType);
-                        if (newParam != null)
+                        if (a.Equals(b))
                         {
-                            f.SetValue(newObj, newParam);
+                            object newParam = Create(f.FieldType);
+                            if (newParam != null)
+                            {
+                                f.SetValue(newObj, newParam);
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        if (a == b)
                         {
-                            return null;
+                            object newParam = Create(f.FieldType);
+                            if (newParam != null)
+                            {
+                                f.SetValue(newObj, newParam);
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }
                     }
                 }
@@ -152,7 +173,7 @@ namespace Faker
             catch(Exception e)
             {
                 exeptionConstructors.Add(maxParamConstructor);
-                Console.WriteLine("{0}: Constructor Exception", maxParamConstructor.Name);
+                Console.WriteLine("{0}: Constructor Exception", type.ToString());
                 newObj = Generate(type);
             }
             return newObj;
@@ -190,14 +211,14 @@ namespace Faker
                 }
                 else
                 {
-                    typesInProcess.Clear();
+                    typesInProcess.Remove(type);
                     throw new Exception();
                 }
             }
             catch
             {
                 Console.WriteLine("cyclic dependency");
-                return null;
+                return new Exception();
             }
             object obj = Generate(type);
             typesInProcess.Remove(type);

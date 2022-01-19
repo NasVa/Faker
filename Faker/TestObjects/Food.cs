@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Faker.TestObjects
 {
     [Serializable]
-    class Food
+    public class Food
     {
         public String name;
         private bool isTrue;
